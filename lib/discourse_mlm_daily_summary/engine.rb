@@ -27,6 +27,7 @@ module DiscourseMlmDailySummary
             .includes(:posts)
             .for_digest(user, 100.years.ago)
             .where("posts.created_at > ?", @since)
+            .where("topics.category_id = 5")
             .order("posts.id")
 
           unless user.staff?
@@ -82,7 +83,7 @@ module DiscourseMlmDailySummary
             User.real
                 .activated
                 .not_suspended
-                .not_silenced
+                #.not_silenced # I think silenced users should still receive the ExCom summaries.
                 .joins(:user_option)
                 .where(id: enabled_ids)
                 .where(staged: false)
